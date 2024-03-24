@@ -3,7 +3,8 @@
 FROM mcr.microsoft.com/azure-functions/python:4-python3.8
 
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
-    AzureFunctionsJobHost__Logging__Console__IsEnabled=true
+    AzureFunctionsJobHost__Logging__Console__IsEnabled=true \
+    AzureWebJobsStorage=<CONNECTION STRING>
 
 COPY requirements.txt /
 RUN pip install -r /requirements.txt
