@@ -3,3 +3,5 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 azure-functions
+snowflake-connector-python==3.2.0
+pyodbc==4.0.39

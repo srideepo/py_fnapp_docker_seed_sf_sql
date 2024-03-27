@@ -2,6 +2,9 @@ import azure.functions as func
 import datetime
 import json
 import logging
+import snowflake.connector
+import pyodbc
+
 
 app = func.FunctionApp()
 
@@ -9,6 +12,8 @@ app = func.FunctionApp()
 @app.route(route="MyHttpTrigger", auth_level=func.AuthLevel.ANONYMOUS)
 def MyHttpTrigger(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
+
+    sql_read()
 
     name = req.params.get('name')
     if not name:
@@ -50,7 +55,29 @@ def main(req: func.HttpRequest, inputblob: str, outputblob: func.Out[str]):
                   path="inbound/{name}.trigger",
                   connection="AzureWebJobsStorage")
 def test_function(myblob: func.InputStream):
-   logging.info(f"Python blob trigger function processed blob \n"
+    logging.info(f"Python blob trigger function processed blob \n"
                 f"Name: {myblob.name}\n"
                 f"Blob Size: {myblob.length} bytes")
+    return "ok"
+
+##// //###############################################################
+
+##// private functions SQL access //##################################
+def sql_read():
+    try:
+        logging.info(">>>Inside function")
+        AZSQL_CONN_STR = <CONNECTION STRING>
+        conn: pyodbc.Connection = pyodbc.connect(AZSQL_CONN_STR)
+        logging.info(">>>Inside function")
+        cursor: pyodbc.Cursor = conn.cursor()
+        cursor.execute("SELECT @@version;")
+        row = cursor.fetchone()
+        while row:
+            outstr = row[0]
+            logging.info(row[0])
+            row = cursor.fetchone()
+        return f"Hello, this is sql endpoint! {outstr}"    
+    except Exception as error:
+        return f"EXCEPTION: {error}"
+
 ##// //###############################################################

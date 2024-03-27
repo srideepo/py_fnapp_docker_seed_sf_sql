@@ -1,5 +1,6 @@
 # py_fnapp_docker_seed_sf_sql
-Based on `py_fnapp_docker_seed`, adding drivers for Snowflake, MSSQL, Blob storage
+Based on `py_fnapp_docker_seed`, adding drivers for Snowflake, MSSQL, Blob storage.
+Using SQL server ODBC driver 18 on Ubuntu 20.04 (WSL).
 
 # Development environment
 Platform: WSL Ubuntu on windows  
@@ -22,12 +23,15 @@ Core tools
         <mark>this gives error `Object reference not set to an instance of an object.`, therefore handcraft the function to handle blob</mark>
 
 # Run
-    In local
+    In local (Ubuntu)
     - update `local.settings.json`, set `AzureWebJobsStorage` to <CONNECTION STRING>
+    - apt install unixodbc (to avoid pyodbc not found error)
+        (Use reference #4 to setup odbc on Ubuntu)
     - `func start`
 
     In Docker
     - update Dockerfile, set ENV AzureWebJobsStorage=<CONNECTION STRING>
+    - update Dockerfile, change unixodbc-dev to unixodbc in line `RUN apt install unixodbc -y`
     - `docker build --no-cache -t <ACR NAME>.azurecr.io/<IMAGE NAME>:<TAG> .`
     - `docker run -d -p 8080:80 <ACR NAME>.azurecr.io/<IMAGE NAME>:<TAG>`
 
@@ -51,8 +55,11 @@ Core tools
     https://<FNAPP URL>.azurewebsites.net/api/MyHttpTrigger
 
 # References
-[Develop Azure Functions locally using Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-python)
+1. [Develop Azure Functions locally using Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-python)
 
-[create-supporting-azure-resources-for-your-function](https://learn.microsoft.com/en-us/azure/azure-functions/functions-how-to-custom-container?tabs=core-tools%2Cacr%2Cazure-cli2%2Cazure-cli&pivots=azure-functions#create-supporting-azure-resources-for-your-function)
+2. [create-supporting-azure-resources-for-your-function](https://learn.microsoft.com/en-us/azure/azure-functions/functions-how-to-custom-container?tabs=core-tools%2Cacr%2Cazure-cli2%2Cazure-cli&pivots=azure-functions#create-supporting-azure-resources-for-your-function)
 
-[programming-language-python#build-the-container-image-and-verify-locally](https://learn.microsoft.com/en-us/azure/azure-functions/functions-create-container-registry?tabs=acr%2Cbash&pivots=programming-language-python#build-the-container-image-and-verify-locally)
+3. [programming-language-python#build-the-container-image-and-verify-locally](https://learn.microsoft.com/en-us/azure/azure-functions/functions-create-container-registry?tabs=acr%2Cbash&pivots=programming-language-python#build-the-container-image-and-verify-locally)
+
+4. [installing-the-microsoft-odbc-driver-for-sql-server](https://learn.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-ver16&tabs=ubuntu18-install%2Calpine17-install%2Cdebian8-install%2Cubuntu16-13-install%2Crhel7-offline)
+
