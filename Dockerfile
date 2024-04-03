@@ -28,7 +28,7 @@ RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
 
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true \
-    AzureWebJobsStorage=<CONNECTION STRING>
+    AzureWebJobsStorage=<WEB STORAGE CONNECTION STRING>
 
 COPY requirements.txt /
 RUN pip install -r /requirements.txt

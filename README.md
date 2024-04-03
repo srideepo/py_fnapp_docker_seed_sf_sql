@@ -1,6 +1,15 @@
 # py_fnapp_docker_seed_sf_sql
 Based on `py_fnapp_docker_seed`, adding drivers for Snowflake, MSSQL, Blob storage.
 Using SQL server ODBC driver 18 on Ubuntu 20.04 (WSL).
+Using Python Snowflake driver on Ubuntu 20.04 (WSL).
+
+# Prerequisites
+- Blob storge with connection string
+- MSSQL db with connection string
+- MSSQL external data source with blob
+- Snowflake db with connection string
+- Snowflake external stage with blob
+- pip install "snowflake-connector-python[pandas]"
 
 # Development environment
 Platform: WSL Ubuntu on windows  
@@ -16,6 +25,7 @@ Core tools
 
 # Development from scratch
     - `cd` Project folder
+    - `virtualenv .venv`
     - `func init --worker-runtime python --model V2 --docker`
     - `func new --template "Http Trigger" --name MyHttpTrigger`
     - `func templates list`
