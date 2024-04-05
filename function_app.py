@@ -7,12 +7,14 @@ import pyodbc
 from io import BytesIO
 import pandas as pd
 import os
+from dotenv import load_dotenv
 
 app = func.FunctionApp()
+load_dotenv()
 
 VERSION_ID = 4
-AZSQL_CONN_STR = ("<AZURE CONNECTION STRING>")
-SF_CONN_STR = "<SF CONNECTION STRING>"
+AZSQL_CONN_STR = os.getenv('AzureSQLConnectionString')
+SF_CONN_STR = json.loads(os.getenv('SnowflakeConnectionString'))
 
 ##// HTTP trigger //###################################################
 @app.route(route="DemoHttpTrigger", auth_level=func.AuthLevel.ANONYMOUS)
@@ -100,25 +102,30 @@ def _mssql_access_sync(AZSQL_CONN_STR, SQL_SCRIPT):
     try:
         logging.info("MSSQL call starting...")
         conn: pyodbc.Connection = pyodbc.connect(AZSQL_CONN_STR)
+        conn.autocommit = True
         cursor: pyodbc.Cursor = conn.cursor()
         cursor.execute(SQL_SCRIPT)
 
         _df_list = []
-        while True:
-            _columns = [column[0] for column in cursor.description]
-            _results = []
-            for _row in cursor.fetchall():
-                _results.append(dict(zip(_columns, _row)))
-            _df_list.append(_results)        
-            if not cursor.nextset():
-                break
+        if cursor.description:
+            while True:
+                _columns = [column[0] for column in cursor.description]
+                _results = []
+                for _row in cursor.fetchall():
+                    _results.append(dict(zip(_columns, _row)))
+                _df_list.append(_results)        
+                if not cursor.nextset():
+                    break
+        else:
+            logging.info(f"INFO! Cursor is None, results will be empty.")
+            pass
 
         cursor.close()
         conn.close()
         logging.info(f"MSSQL call completed! Received results, count[{len(_df_list)}]")
         return _df_list
     except Exception as error:
-        return f"EXCEPTION: {error}"
+        raise error
 
 ##// //###############################################################
 
@@ -137,8 +144,8 @@ def _snowflake_access_sync(SF_CONN_STR, SQL_SCRIPT) -> list:
         logging.info(f"SNOWFLAKE (sync) call completed! Received results, count[{len(_dfdata)}].")
         return _dfdata
     except Exception as error:
-        #print (f"ERROR! {error}")
-        return error
+        logging.info(error)
+        raise error
 
 ##// //###############################################################
 
@@ -155,6 +162,6 @@ def _snowflake_access_async(SF_CONN_STR, SQL_SCRIPT):
         return _query_ref  
     except Exception as error:
         logging.info(error)
-        return f"EXCEPTION: {error}"
+        raise error
 
 ##// //###############################################################

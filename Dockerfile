@@ -28,7 +28,9 @@ RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
 
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true \
-    AzureWebJobsStorage=<WEB STORAGE CONNECTION STRING>
+    AzureWebJobsStorage=DefaultEndpointsProtocol=https;AccountName=<ACCOUNTNAME>;AccountKey=<ACCOUNTKEY>;EndpointSuffix=core.windows.net \
+    AzureSQLConnectionString='Driver={ODBC Driver 18 for SQL Server};Server=tcp:<STORAGEACCOUNT>.database.windows.net,1433;Database=<DBNAME>;Uid=<USERID>;Pwd=<PASSWORD>;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;' \
+    SnowflakeConnectionString='{"account":"<ACCOUNT>","user":"<USER>","password":"<PASSWORD>","role":"ACCOUNTADMIN","warehouse":"COMPUTE_WH","database":"SNOWFLAKE_SAMPLE_DATA","session_parameters":{"QUERY_TAG": "TAG01","MULTI_STATEMENT_COUNT": 0}}'
 
 COPY requirements.txt /
 RUN pip install -r /requirements.txt

@@ -3,6 +3,8 @@
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "python",
     "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
-    "AzureWebJobsStorage": "<WEB STORAGE CONNECTION STRING>"
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=<STORAGEACCOUNTNAME>;AccountKey=<ACCOUNTKEY>;EndpointSuffix=core.windows.net",
+    "AzureSQLConnectionString": "Driver={ODBC Driver 18 for SQL Server};Server=tcp:<SQLSERVERNAME>.database.windows.net,1433;Database=<DATABASENAME>;Uid=<USERID>;Pwd=<PASSWORD>;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;",
+    "SnowflakeConnectionString": "{\"account\":\"<ACCOUNTNAME\",\"user\":\"<USER>\",\"password\":\"<PASSWORD>\",\"role\":\"ACCOUNTADMIN\",\"warehouse\":\"COMPUTE_WH\",\"database\":\"SNOWFLAKE_SAMPLE_DATA\",\"session_parameters\":{\"QUERY_TAG\": \"TAG01\",\"MULTI_STATEMENT_COUNT\": 0}}"
   }
 }
